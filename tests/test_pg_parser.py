@@ -89,12 +89,13 @@ def test_data_types_explicitly():
     )
     parsed_process_graph = OpenEOProcessGraph._parse_datamodel(nested_process_graph)
     assert isinstance(parsed_process_graph, ProcessGraph)
-    assert isinstance(parsed_process_graph.process_graph["root"], ProcessNode)
+    root_node = next(iter(parsed_process_graph.process_graph))
+    assert isinstance(parsed_process_graph.process_graph[root_node], ProcessNode)
     assert isinstance(
-        parsed_process_graph.process_graph["root"].arguments["data"], ResultReference
+        parsed_process_graph.process_graph[root_node].arguments["data"], ResultReference
     )
     assert isinstance(
-        parsed_process_graph.process_graph["root"].arguments["data"].node,
+        parsed_process_graph.process_graph[root_node].arguments["data"].node,
         ProcessNode,
     )
 

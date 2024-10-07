@@ -70,7 +70,7 @@ class ProcessGraphUnflattener:
     def process(self):
         """Process the flat process graph: unflatten it."""
         result_key, result_node = find_result_node(flat_graph=self._flat_graph)
-        return self.get_node(result_key)
+        return self.get_node(result_key), result_key
 
     def get_node(self, key: str) -> Any:
         """Get processed node by node key."""
@@ -129,7 +129,7 @@ class ProcessGraphUnflattener:
                 result_node_id, _ = find_result_node(value["process_graph"])
                 return self._process_child_graph(
                     node_name=result_node_id,
-                    child_graph=ProcessGraphUnflattener.unflatten(value["process_graph"]),
+                    child_graph=ProcessGraphUnflattener.unflatten(value["process_graph"])[0],
                 )
             else:
                 return {k: self._process_value(v) for (k, v) in value.items()}

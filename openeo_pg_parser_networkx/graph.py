@@ -77,7 +77,6 @@ class OpenEOProcessGraph:
 
         nested_raw_graph = self._unflatten_raw_process_graph(pg_data)
         self.nested_graph = self._parse_datamodel(nested_raw_graph)
-
         # Start parsing the graph at the result node of the top-level graph.
         self._EVAL_ENV = None
 
@@ -98,10 +97,10 @@ class OpenEOProcessGraph:
         """
         if "process_graph" not in raw_flat_graph:
             raw_flat_graph = {"process_graph": raw_flat_graph}
-
+        unflattened_graph, root_key = ProcessGraphUnflattener.unflatten(raw_flat_graph["process_graph"])
         nested_graph = {
             "process_graph": {
-                "root": ProcessGraphUnflattener.unflatten(raw_flat_graph["process_graph"])
+                root_key: unflattened_graph
             }
         }
         logger.debug("Deserialised process graph into nested structure")
@@ -120,7 +119,6 @@ class OpenEOProcessGraph:
         Start recursively walking a process graph from its result node and parse its information into self.G.
         This step passes process_graph.uid to make sure that each process graph operates within its own namespace so that nodes are unique.
         """
-
         for node_name, node in process_graph.process_graph.items():
             if node.result:
                 self._EVAL_ENV = EvalEnv(
